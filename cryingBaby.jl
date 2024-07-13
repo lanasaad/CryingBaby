@@ -54,13 +54,23 @@ function POMDPs.initialstate(pomdp::CryingBabyPOMDP)
 	return SparseCat([HUNGRYₛ, FULLₛ], [0.5, 0.5])
 end
 
-function POMDPs.initialize_belief(pomdp::CryingBabyPOMDP)
+function POMDPs.initial_belief(pomdp::CryingBabyPOMDP)
 	return SparseCat([HUNGRYₛ, FULLₛ], [0.5, 0.5])
 end
 
 function POMDPs.actions(p::CryingBabyPOMDP)
 	return [FEEDₐ, IGNOREₐ]
 end
+
+function POMDPs.states(p::CryingBabyPOMDP)
+    return [HUNGRYₛ, FULLₛ]
+end
+
+
+#function POMDPs.stateindex(p::CryingBabyPOMDP, s::State)
+ #   return s == HUNGRYₛ ? 1 : 2
+#end
+
 
 p = CryingBabyPOMDP()
 s0  = rand(initialstate(p))
@@ -79,13 +89,13 @@ sp = rand(transition(p, s0, a))
 o=rand(observation(p,s0,a,sp))
 r=reward(p,s0,a)
 
+
+#what should be here is beliefupdate=update(oldbelief,observation )
+
 using BeliefUpdaters
 
-up=DiscreteUpdater(p) #update
+#const Belief = Vector{Real};
 
-const Belief = Vector{Real}
-update(up, b0)
-
-#function POMDPs.update(::Updater,b::Belief,a::Action,o::Observation)
-	#return update((p),b,a,o))
-
+#updater(pomdp::CryingBabyPOMDP) = DiscreteUpdater(pomdp); #p or pompdp
+belief_updater = DiscreteUpdater(p) 
+b1=update(belief_updater,b0,a,o) 
